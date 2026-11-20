@@ -372,5 +372,26 @@ body{background:var(--page);display:flex;align-items:center;justify-content:cent
   requestAnimationFrame(frame);
 })();
 </script>
+<audio id="bgm" src="music.m4a" loop preload="auto"></audio>
+<script>
+(function(){
+  var a=document.getElementById('bgm');
+  a.volume=0.10; // громкость 10%
+  var started=false;
+  function go(){
+    if(started)return;
+    var p=a.play();
+    if(p&&p.then)p.then(function(){started=true;off()}).catch(function(){});
+    else{started=true;off()}
+  }
+  function off(){['pointerdown','touchend','click','keydown'].forEach(function(e){document.removeEventListener(e,go,true)})}
+  ['pointerdown','touchend','click','keydown'].forEach(function(e){document.addEventListener(e,go,true)});
+  go(); // браузер может разрешить автозапуск сразу
+  document.addEventListener('visibilitychange',function(){
+    if(!started)return;
+    if(document.hidden)a.pause();else a.play().catch(function(){});
+  });
+})();
+</script>
 </body>
 </html>
